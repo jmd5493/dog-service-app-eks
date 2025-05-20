@@ -6,6 +6,46 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY || 'sk_test_...')
 const app = express();
 app.use(cors());
 app.use(express.json());
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+
+const USERS = [
+  { username: 'trainer', passwordHash: bcrypt.hashSync('password123', 10) } // hardcoded for now
+];
+
+const JWT_SECRET = process.env.JWT_SECRET || 'supersecret123';
+
+// Login route
+app.post('/login', (req, res) => {
+  const { username, password } = req.body;
+  const user = USERS.find(u => u.username === username);
+  if (!user) return res.status(401).json({ error: 'Invalid username or password' });
+
+  const match = bcrypt.compareSync(password, user.passwordHash);
+  if (!match) return res.status(401).json({ error: 'Invalid username or password' });
+
+  const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: '2h' });
+  res.json({ token });
+});
+
+// Auth middleware
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader?.split(' ')[1];
+  if (!token) return res.sendStatus(401);
+
+  jwt.verify(token, JWT_SECRET, (err, user) => {
+    if (err) return res.sendStatus(403);
+    req.user = user;
+    next();
+  });
+}
+
+// Protect create-checkout-session
+app.post('/create-checkout-session', authenticateToken, async (req, res) => {
+  // your stripe logic here
+});
+
 
 
 

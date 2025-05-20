@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import QRCode from 'react-qr-code'; // ✅ works with Vite
+import QRCode from 'react-qr-code';
 
 
 const InvoiceForm = () => {
@@ -24,23 +24,27 @@ const InvoiceForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
   
+    const token = localStorage.getItem('token'); // ✅ Get JWT from storage
+  
     const response = await fetch('http://localhost:4242/create-checkout-session', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`, // ✅ Include the JWT in header
+      },
       body: JSON.stringify({
         ownerName: formData.ownerName,
         dogName: formData.dogName,
         trainingProgram: formData.trainingProgram,
-        price: parseFloat(formData.price), // ensure it's a number
+        price: parseFloat(formData.price),
       }),
     });
   
     const data = await response.json();
+  
     if (data.url) {
       setCheckoutUrl(data.url);
       setShowOptions(true);
-  
-      // Auto-clear form fields after generating link
       setFormData({
         ownerName: '',
         dogName: '',
@@ -51,6 +55,7 @@ const InvoiceForm = () => {
       alert('Failed to generate payment link');
     }
   };
+  
   
 
   return (
