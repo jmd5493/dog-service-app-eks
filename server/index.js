@@ -65,8 +65,8 @@ app.post('/create-checkout-session', async (req, res) => {
           quantity: 1,
         }],
         mode: 'payment',
-        success_url: 'http://localhost:5173/success',
-        cancel_url: 'http://localhost:5173/cancel',
+        success_url: 'https://primalcanine.netlify.app/success',
+        cancel_url: 'https://primalcanine.netlify.app/cancel',
       });
   
       res.json({ url: session.url });
