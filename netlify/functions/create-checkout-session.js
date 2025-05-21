@@ -1,3 +1,4 @@
+require('dotenv').config();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 exports.handler = async function (event) {
@@ -16,8 +17,8 @@ exports.handler = async function (event) {
         quantity: 1,
       }],
       mode: 'payment',
-      success_url: 'https://your-site.netlify.app/success',
-      cancel_url: 'https://your-site.netlify.app/cancel',
+      success_url: 'https://primalcanine.netlify.app/success',
+      cancel_url: 'https://primalcanine.netlify.app/cancel',
     });
 
     return {
