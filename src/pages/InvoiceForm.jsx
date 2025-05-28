@@ -24,7 +24,7 @@ const InvoiceForm = ({ onLogout }) => {
     e.preventDefault();
     const token = localStorage.getItem('token');
     try {
-      const response = await fetch('/.netlify/functions/create-checkout-session', {
+      const response = await fetch('/create-checkout-session', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -37,6 +37,13 @@ const InvoiceForm = ({ onLogout }) => {
           price: parseFloat(formData.price),
         }),
       });
+
+      // Check if response is JSON
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        const text = await response.text();
+        throw new Error('Server did not return JSON: ' + text);
+      }
 
       const data = await response.json();
 

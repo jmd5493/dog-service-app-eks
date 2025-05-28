@@ -7,7 +7,7 @@ const Login = ({ onLogin }) => {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    // Make sure this is the only fetch line!
+    // Use Express backend endpoint
     const res = await fetch('/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
