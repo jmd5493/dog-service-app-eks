@@ -7,8 +7,8 @@ const Login = ({ onLogin }) => {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    // const res = await fetch('http://localhost:4242/login', {
-    const res = await fetch('/.netlify/functions/login', {
+    // Make sure this is the only fetch line!
+    const res = await fetch('/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password }),
